@@ -263,6 +263,7 @@ function SettingsModal({
   privacy,
   setPrivacy,
   onClearHistory,
+  onSignOut,
   onClose,
 }) {
   const [tab, setTab] = useState("general");
@@ -428,6 +429,27 @@ function SettingsModal({
                       Currently rendering in {theme} mode.
                     </div>
                   </div>
+                </div>
+                <div style={{ ...rowStyle, borderBottom: "none" }}>
+                  <div>
+                    <div style={{ color: C.text, fontSize: 14.5 }}>Account</div>
+                    <div style={{ color: C.textDim, fontSize: 12.5, marginTop: 2 }}>
+                      Sign out of this Tim account.
+                    </div>
+                  </div>
+                  <button
+                    onClick={onSignOut}
+                    style={{
+                      border: `1px solid ${C.border}`,
+                      borderRadius: 8,
+                      background: "transparent",
+                      color: C.text,
+                      padding: "8px 12px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Sign out
+                  </button>
                 </div>
               </div>
             )}
@@ -693,6 +715,11 @@ export default function TimChat() {
     setMessages([GREETING]);
     setError(null);
     setSidebarOpen(false);
+  }
+
+  async function signOut() {
+    await supabase.auth.signOut();
+    setSettingsOpen(false);
   }
 
   async function deleteConversation(id, ev) {
@@ -1104,6 +1131,7 @@ export default function TimChat() {
           privacy={privacy}
           setPrivacy={setPrivacy}
           onClearHistory={clearAllHistory}
+          onSignOut={signOut}
           onClose={() => setSettingsOpen(false)}
         />
       )}
