@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { detectMoodAI, MOOD_CONFIG } from "./src/moodDetector";
+import { supabase } from "./src/supabaseClient";
 
 const BASE_PROMPT = `You are Tim — a warm, grounded companion and advisor in a chat app.
 
@@ -137,6 +138,42 @@ const GREETING = {
   role: "assistant",
   content: "Hey — I'm Tim. Think of me as a friend you can think out loud with. What's going on?",
 };
+
+function AuthScreen({ C }) {
+  const [mode, setMode] = useState("sign-in");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  async function submit(event) {
+    event.preventDefault();
+    setBusy(true);
+    setError(null);
+    const result = mode === "sign-in"
+      ? await supabase.auth.signInWithPassword({ email, password })
+      : await supabase.auth.signUp({ email, password });
+    if (result.error) setError(result.error.message);
+    else if (mode === "sign-up") setError("Check your email to confirm your account.");
+    setBusy(false);
+  }
+
+  return (
+    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: C.bg, color: C.text, padding: 20 }}>
+      <form onSubmit={submit} style={{ width: "min(100%, 380px)", background: C.panel, border: `1px solid ${C.border}`, borderRadius: 14, padding: 28 }}>
+        <h1 style={{ margin: 0, fontFamily: "Fraunces, serif", fontSize: 32 }}>Tim</h1>
+        <p style={{ color: C.textDim, margin: "8px 0 24px" }}>{mode === "sign-in" ? "Welcome back" : "Create your account"}</p>
+        <label style={{ display: "block", fontSize: 13, marginBottom: 6 }}>Email</label>
+        <input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} style={{ width: "100%", boxSizing: "border-box", marginBottom: 14, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
+        <label style={{ display: "block", fontSize: 13, marginBottom: 6 }}>Password</label>
+        <input required minLength={6} type="password" value={password} onChange={(event) => setPassword(event.target.value)} style={{ width: "100%", boxSizing: "border-box", marginBottom: 18, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
+        {error && <p style={{ color: C.danger, fontSize: 13, lineHeight: 1.4 }}>{error}</p>}
+        <button type="submit" disabled={busy} style={{ width: "100%", padding: 11, border: 0, borderRadius: 8, background: C.accent, color: C.accentText, fontWeight: 600 }}>{busy ? "Please wait..." : mode === "sign-in" ? "Sign in" : "Create account"}</button>
+        <button type="button" onClick={() => { setMode(mode === "sign-in" ? "sign-up" : "sign-in"); setError(null); }} style={{ width: "100%", marginTop: 12, padding: 8, border: 0, background: "transparent", color: C.textDim }}>{mode === "sign-in" ? "Need an account? Sign up" : "Already have an account? Sign in"}</button>
+      </form>
+    </div>
+  );
+}
 
 const DEFAULT_PERSONALIZATION = { nickname: "", tone: "balanced", customInstructions: "" };
 const DEFAULT_PRIVACY = { saveHistory: true };
@@ -529,9 +566,28 @@ export default function TimChat() {
   const [privacy, setPrivacy] = useState(DEFAULT_PRIVACY);
   const [detectedMood, setDetectedMood] = useState("neutral");
   const [moodConfidence, setMoodConfidence] = useState(0);
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const scrollRef = useRef(null);
   const t = useDusk();
   const C = THEMES[theme];
+
+  useEffect(() => {
+    let mounted = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (mounted) {
+        setUser(data.session?.user || null);
+        setAuthLoading(false);
+      }
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+    return () => {
+      mounted = false;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
 
   const systemPrompt = useMemo(() => {
     let p = BASE_PROMPT;
@@ -723,6 +779,11 @@ export default function TimChat() {
 
   const hue1 = C.heroFrom[0] + 10 * Math.sin(t / 60);
   const hue2 = C.heroTo[0] + 8 * Math.sin(t / 45 + 1.3);
+
+  if (authLoading) {
+    return <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: C.bg, color: C.text }}>Loading...</div>;
+  }
+  if (!user) return <AuthScreen C={C} />;
 
   return (
     <div
