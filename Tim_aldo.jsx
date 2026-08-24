@@ -293,10 +293,12 @@ function SettingsModal({
   setPrivacy,
   onClearHistory,
   onSignOut,
+  userEmail,
   onClose,
 }) {
   const [tab, setTab] = useState("general");
   const tabs = [
+    { id: "account", label: "Account" },
     { id: "general", label: "General" },
     { id: "personalization", label: "Personalization" },
     { id: "data", label: "Data controls" },
@@ -459,20 +461,31 @@ function SettingsModal({
                     </div>
                   </div>
                 </div>
-                <div style={{ ...rowStyle, borderBottom: "none" }}>
-                  <div>
-                    <div style={{ color: C.text, fontSize: 14.5 }}>Account</div>
-                    <div style={{ color: C.textDim, fontSize: 12.5, marginTop: 2 }}>
-                      Sign out of this Tim account.
-                    </div>
+              </div>
+            )}
+
+            {tab === "account" && (
+              <div>
+                <div style={{ padding: "14px 0", borderBottom: `1px solid ${C.border}` }}>
+                  <div style={{ color: C.text, fontSize: 14.5 }}>Signed-in email</div>
+                  <div style={{ color: C.textDim, fontSize: 13, marginTop: 5, wordBreak: "break-word" }}>
+                    {userEmail}
                   </div>
+                </div>
+                <div style={{ padding: "14px 0", borderBottom: `1px solid ${C.border}` }}>
+                  <div style={{ color: C.text, fontSize: 14.5 }}>Password</div>
+                  <div style={{ color: C.textDim, fontSize: 12.5, marginTop: 2 }}>
+                    Use Forgot password on the sign-in screen to change it.
+                  </div>
+                </div>
+                <div style={{ padding: "14px 0" }}>
                   <button
                     onClick={onSignOut}
                     style={{
-                      border: `1px solid ${C.border}`,
+                      border: `1px solid ${C.danger}`,
                       borderRadius: 8,
                       background: "transparent",
-                      color: C.text,
+                      color: C.danger,
                       padding: "8px 12px",
                       cursor: "pointer",
                     }}
@@ -1165,6 +1178,7 @@ export default function TimChat() {
           setPrivacy={setPrivacy}
           onClearHistory={clearAllHistory}
           onSignOut={signOut}
+          userEmail={user.email}
           onClose={() => setSettingsOpen(false)}
         />
       )}
