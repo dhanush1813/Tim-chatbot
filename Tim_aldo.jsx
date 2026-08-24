@@ -668,15 +668,11 @@ export default function TimChat() {
     setLoading(true);
     setError(null);
 
-    // Detect mood from user message
-    try {
-      const { mood, confidence } = await detectMoodAI(text, messages);
+    // Run mood detection alongside the reply request so it does not delay the response.
+    detectMoodAI(text, messages).then(({ mood, confidence }) => {
       setDetectedMood(mood);
       setMoodConfidence(confidence);
-    } catch (err) {
-      console.warn("Mood detection failed:", err);
-      setDetectedMood("neutral");
-    }
+    });
 
     try {
       const response = await fetch("/api/chat", {
@@ -919,22 +915,8 @@ export default function TimChat() {
                       fontFamily: "'IBM Plex Mono', monospace",
                     }}
                   >
-                    a friend to think out loud with
+                    I am your Mate
                   </p>
-                  <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    marginTop: 8,
-                    fontSize: 12,
-                    color: C.textDim,
-                  }}>
-                    <span>{MOOD_CONFIG[detectedMood]?.icon}</span>
-                    <span>{MOOD_CONFIG[detectedMood]?.label}</span>
-                    {moodConfidence > 0.5 && (
-                      <span style={{ fontSize: 10 }}>({Math.round(moodConfidence * 100)}%)</span>
-                    )}
-                  </div>
                 </div>
               </div>
 

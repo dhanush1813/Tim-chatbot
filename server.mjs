@@ -1,8 +1,12 @@
 import "dotenv/config";
 import express from "express";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
+const host = "0.0.0.0";
+const appDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 app.use(express.json());
 
@@ -171,6 +175,11 @@ ${fullPrompt}`
   }
 });
 
-app.listen(port, () => {
-  console.log(`API server running at http://127.0.0.1:${port}`);
+app.use(express.static(path.join(appDirectory, "dist")));
+app.get("/{*splat}", (_req, res) => {
+  res.sendFile(path.join(appDirectory, "dist", "index.html"));
+});
+
+app.listen(port, host, () => {
+  console.log(`Tim server running on ${host}:${port}`);
 });
