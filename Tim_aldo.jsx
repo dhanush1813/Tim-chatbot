@@ -638,7 +638,8 @@ export default function TimChat() {
   const [shareStatus, setShareStatus] = useState("");
   const scrollRef = useRef(null);
   const t = useDusk();
-  const C = THEMES[theme];
+  const moodTheme = MOOD_THEMES[detectedMood] || MOOD_THEMES.neutral;
+  const C = { ...THEMES[theme], accent: moodTheme.accent };
 
   useEffect(() => {
     let mounted = true;
