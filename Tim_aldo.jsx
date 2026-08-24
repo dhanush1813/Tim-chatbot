@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
+import { detectMoodAI, MOOD_CONFIG } from "./src/moodDetector";
 
 const BASE_PROMPT = `You are Tim — a warm, grounded companion and advisor in a chat app.
 
@@ -59,6 +60,33 @@ const THEMES = {
     headerText: "#2A2418",
     headerSub: "rgba(42,36,24,0.6)",
     overlay: "rgba(30,24,14,0.35)",
+  },
+};
+
+const MOOD_THEMES = {
+  happy: {
+    bg: "linear-gradient(135deg, #fff9e6 0%, #ffe8cc 100%)",
+    accent: "#e0a52c",
+  },
+  excited: {
+    bg: "linear-gradient(135deg, #e0f7f4 0%, #b3e5e1 100%)",
+    accent: "#3fb6a8",
+  },
+  sad: {
+    bg: "linear-gradient(135deg, #e8ecf9 0%, #d4dff5 100%)",
+    accent: "#5c7cfa",
+  },
+  angry: {
+    bg: "linear-gradient(135deg, #fde8e6 0%, #f5c9c3 100%)",
+    accent: "#c9584f",
+  },
+  anxious: {
+    bg: "linear-gradient(135deg, #f3e9f8 0%, #e6d5f0 100%)",
+    accent: "#9b7fd4",
+  },
+  neutral: {
+    bg: "#1B1A2E",
+    accent: "#8a8f98",
   },
 };
 
@@ -499,6 +527,8 @@ export default function TimChat() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [personalization, setPersonalization] = useState(DEFAULT_PERSONALIZATION);
   const [privacy, setPrivacy] = useState(DEFAULT_PRIVACY);
+  const [detectedMood, setDetectedMood] = useState("neutral");
+  const [moodConfidence, setMoodConfidence] = useState(0);
   const scrollRef = useRef(null);
   const t = useDusk();
   const C = THEMES[theme];
@@ -638,6 +668,16 @@ export default function TimChat() {
     setLoading(true);
     setError(null);
 
+    // Detect mood from user message
+    try {
+      const { mood, confidence } = await detectMoodAI(text, messages);
+      setDetectedMood(mood);
+      setMoodConfidence(confidence);
+    } catch (err) {
+      console.warn("Mood detection failed:", err);
+      setDetectedMood("neutral");
+    }
+
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -694,9 +734,9 @@ export default function TimChat() {
         minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
-        background: C.bg,
+        background: MOOD_THEMES[detectedMood]?.bg || MOOD_THEMES.neutral.bg,
         fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-        transition: "background 0.25s ease",
+        transition: "background 900ms ease",
       }}
     >
       <style>{`
@@ -881,6 +921,20 @@ export default function TimChat() {
                   >
                     a friend to think out loud with
                   </p>
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    marginTop: 8,
+                    fontSize: 12,
+                    color: C.textDim,
+                  }}>
+                    <span>{MOOD_CONFIG[detectedMood]?.icon}</span>
+                    <span>{MOOD_CONFIG[detectedMood]?.label}</span>
+                    {moodConfidence > 0.5 && (
+                      <span style={{ fontSize: 10 }}>({Math.round(moodConfidence * 100)}%)</span>
+                    )}
+                  </div>
                 </div>
               </div>
 
