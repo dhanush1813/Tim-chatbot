@@ -175,19 +175,21 @@ function AuthScreen({ C, initialMode = "sign-in", onRecoveryComplete }) {
   }
 
   return (
-    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: C.bg, color: C.text, padding: 20 }}>
-      <form onSubmit={submit} style={{ width: "min(100%, 380px)", background: C.panel, border: `1px solid ${C.border}`, borderRadius: 14, padding: 28 }}>
-        <h1 style={{ margin: 0, fontFamily: "Fraunces, serif", fontSize: 32 }}>Tim</h1>
-        <p style={{ color: C.textDim, margin: "8px 0 24px" }}>{mode === "sign-in" ? "Welcome back" : mode === "reset-password" ? "Choose a new password" : mode === "reset" ? "Recover your account" : "Create your account"}</p>
+    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: `radial-gradient(circle at 15% 10%, ${C.bubbleAssistant}, transparent 34%), radial-gradient(circle at 90% 85%, ${C.bubbleAssistant}, transparent 28%), ${C.bg}`, color: C.text, padding: 20 }}>
+      <form onSubmit={submit} style={{ position: "relative", overflow: "hidden", width: "min(100%, 380px)", background: C.panel, border: `1px solid ${C.border}`, borderRadius: 16, padding: 30, boxShadow: "0 24px 70px rgba(0,0,0,0.28)" }}>
+        <div aria-hidden style={{ height: 4, position: "absolute", top: 0, left: 0, right: 0, background: C.accent }} />
+        <div style={{ color: C.accent, fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 10 }}>A private space to think</div>
+        <h1 style={{ margin: 0, fontFamily: "Fraunces, serif", fontSize: 36, letterSpacing: "0.01em" }}>Tim</h1>
+        <p style={{ color: C.textDim, margin: "8px 0 26px" }}>{mode === "sign-in" ? "Welcome back" : mode === "reset-password" ? "Choose a new password" : mode === "reset" ? "Recover your account" : "Create your account"}</p>
         {mode !== "reset-password" && <>
           <label style={{ display: "block", fontSize: 13, marginBottom: 6 }}>Email</label>
-          <input required type="email" autoComplete="email" list="tim-saved-emails" value={email} onChange={(event) => setEmail(event.target.value)} style={{ width: "100%", boxSizing: "border-box", marginBottom: 14, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
+          <input required type="email" autoComplete="email" list="tim-saved-emails" value={email} onChange={(event) => setEmail(event.target.value)} style={{ width: "100%", boxSizing: "border-box", marginBottom: 14, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text, outlineColor: C.accent }} />
           <datalist id="tim-saved-emails"><option value={email} /></datalist>
         </>}
         {mode !== "reset" && <>
           <label style={{ display: "block", fontSize: 13, marginBottom: 6 }}>{mode === "reset-password" ? "New password" : "Password"}</label>
           <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
-            <input required minLength={6} autoComplete={mode === "sign-in" ? "current-password" : "new-password"} type={showPassword ? "text" : "password"} value={password} onChange={(event) => setPassword(event.target.value)} style={{ flex: 1, minWidth: 0, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
+            <input required minLength={6} autoComplete={mode === "sign-in" ? "current-password" : "new-password"} type={showPassword ? "text" : "password"} value={password} onChange={(event) => setPassword(event.target.value)} style={{ flex: 1, minWidth: 0, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text, outlineColor: C.accent }} />
             <button type="button" onClick={() => setShowPassword((visible) => !visible)} style={{ border: `1px solid ${C.border}`, borderRadius: 8, background: "transparent", color: C.text, padding: "0 10px", cursor: "pointer" }}>{showPassword ? "Hide" : "Show"}</button>
           </div>
           {(mode === "sign-up" || mode === "reset-password") && <>
