@@ -840,6 +840,12 @@ export default function TimChat() {
         }),
       });
       const data = await response.json();
+      if (!response.ok) {
+        if (response.status === 429) {
+          throw new Error("Gemini's free daily limit has been reached. Please try again later.");
+        }
+        throw new Error(data?.error?.message || "The chat service is temporarily unavailable.");
+      }
       const reply = data?.content?.find((b) => b.type === "text")?.text;
       if (!reply) throw new Error("No reply returned");
       const finalMessages = [...nextMessages, { role: "assistant", content: reply }];
@@ -862,7 +868,7 @@ export default function TimChat() {
         await persistConversation(id, finalMessages);
       }
     } catch (e) {
-      setError("Tim didn't catch that — try sending it again.");
+      setError(e.message || "Tim didn't catch that — try sending it again.");
     } finally {
       setLoading(false);
     }
