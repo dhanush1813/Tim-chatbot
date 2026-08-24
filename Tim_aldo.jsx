@@ -898,6 +898,7 @@ export default function TimChat() {
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap');
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: ${C.bg}; }
         ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 3px; }
         textarea:focus, button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid ${C.accent}; outline-offset: 2px; }
         @media (prefers-reduced-motion: reduce) {
