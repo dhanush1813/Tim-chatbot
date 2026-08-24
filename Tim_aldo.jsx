@@ -25,7 +25,7 @@ const THEMES = {
     panel: "#211F38",
     panel2: "#28264A",
     panel3: "#1F1D36",
-    border: "rgba(255,255,255,0.08)",
+    border: "rgba(0,0,0,0.32)",
     text: "#F2ECE4",
     textDim: "rgba(242,236,228,0.6)",
     bubbleUser: "#3D3557",
