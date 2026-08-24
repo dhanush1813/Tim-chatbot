@@ -139,8 +139,8 @@ const GREETING = {
   content: "Hey — I'm Tim. Think of me as a friend you can think out loud with. What's going on?",
 };
 
-function AuthScreen({ C }) {
-  const [mode, setMode] = useState("sign-in");
+function AuthScreen({ C, initialMode = "sign-in", onRecoveryComplete }) {
+  const [mode, setMode] = useState(initialMode);
   const [email, setEmail] = useState(() => window.localStorage.getItem("tim:last-email") || "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -152,13 +152,18 @@ function AuthScreen({ C }) {
     setBusy(true);
     setError(null);
     window.localStorage.setItem("tim:last-email", email);
-    const result = mode === "reset"
+    const result = mode === "reset-password"
+      ? await supabase.auth.updateUser({ password })
+      : mode === "reset"
       ? await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin })
       : mode === "sign-in"
         ? await supabase.auth.signInWithPassword({ email, password })
         : await supabase.auth.signUp({ email, password });
     if (result.error) setError(result.error.message);
-    else if (mode === "reset") setError("Password reset instructions were sent to your email.");
+    else if (mode === "reset-password") {
+      window.history.replaceState({}, document.title, window.location.pathname);
+      onRecoveryComplete?.();
+    } else if (mode === "reset") setError("Password reset instructions were sent to your email.");
     else if (mode === "sign-up" && !result.data.session) setError("Email confirmation is enabled in Supabase.");
     setBusy(false);
   }
@@ -167,21 +172,23 @@ function AuthScreen({ C }) {
     <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: C.bg, color: C.text, padding: 20 }}>
       <form onSubmit={submit} style={{ width: "min(100%, 380px)", background: C.panel, border: `1px solid ${C.border}`, borderRadius: 14, padding: 28 }}>
         <h1 style={{ margin: 0, fontFamily: "Fraunces, serif", fontSize: 32 }}>Tim</h1>
-        <p style={{ color: C.textDim, margin: "8px 0 24px" }}>{mode === "sign-in" ? "Welcome back" : mode === "reset" ? "Recover your account" : "Create your account"}</p>
-        <label style={{ display: "block", fontSize: 13, marginBottom: 6 }}>Email</label>
-        <input required type="email" autoComplete="email" list="tim-saved-emails" value={email} onChange={(event) => setEmail(event.target.value)} style={{ width: "100%", boxSizing: "border-box", marginBottom: 14, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
-        <datalist id="tim-saved-emails"><option value={email} /></datalist>
+        <p style={{ color: C.textDim, margin: "8px 0 24px" }}>{mode === "sign-in" ? "Welcome back" : mode === "reset-password" ? "Choose a new password" : mode === "reset" ? "Recover your account" : "Create your account"}</p>
+        {mode !== "reset-password" && <>
+          <label style={{ display: "block", fontSize: 13, marginBottom: 6 }}>Email</label>
+          <input required type="email" autoComplete="email" list="tim-saved-emails" value={email} onChange={(event) => setEmail(event.target.value)} style={{ width: "100%", boxSizing: "border-box", marginBottom: 14, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
+          <datalist id="tim-saved-emails"><option value={email} /></datalist>
+        </>}
         {mode !== "reset" && <>
-          <label style={{ display: "block", fontSize: 13, marginBottom: 6 }}>Password</label>
+          <label style={{ display: "block", fontSize: 13, marginBottom: 6 }}>{mode === "reset-password" ? "New password" : "Password"}</label>
           <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
             <input required minLength={6} autoComplete={mode === "sign-in" ? "current-password" : "new-password"} type={showPassword ? "text" : "password"} value={password} onChange={(event) => setPassword(event.target.value)} style={{ flex: 1, minWidth: 0, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
             <button type="button" onClick={() => setShowPassword((visible) => !visible)} style={{ border: `1px solid ${C.border}`, borderRadius: 8, background: "transparent", color: C.text, padding: "0 10px", cursor: "pointer" }}>{showPassword ? "Hide" : "Show"}</button>
           </div>
         </>}
         {error && <p style={{ color: C.danger, fontSize: 13, lineHeight: 1.4 }}>{error}</p>}
-        <button type="submit" disabled={busy} style={{ width: "100%", padding: 11, border: 0, borderRadius: 8, background: C.accent, color: C.accentText, fontWeight: 600 }}>{busy ? "Please wait..." : mode === "sign-in" ? "Sign in" : mode === "reset" ? "Send reset email" : "Create account"}</button>
+        <button type="submit" disabled={busy} style={{ width: "100%", padding: 11, border: 0, borderRadius: 8, background: C.accent, color: C.accentText, fontWeight: 600 }}>{busy ? "Please wait..." : mode === "sign-in" ? "Sign in" : mode === "reset-password" ? "Update password" : mode === "reset" ? "Send reset email" : "Create account"}</button>
         {mode === "sign-in" && <button type="button" onClick={() => { setMode("reset"); setError(null); }} style={{ width: "100%", marginTop: 12, padding: 8, border: 0, background: "transparent", color: C.textDim }}>Forgot password?</button>}
-        <button type="button" onClick={() => { setMode(mode === "sign-in" ? "sign-up" : "sign-in"); setError(null); }} style={{ width: "100%", marginTop: 4, padding: 8, border: 0, background: "transparent", color: C.textDim }}>{mode === "sign-in" ? "Need an account? Sign up" : "Back to sign in"}</button>
+        {mode !== "reset-password" && <button type="button" onClick={() => { setMode(mode === "sign-in" ? "sign-up" : "sign-in"); setError(null); }} style={{ width: "100%", marginTop: 4, padding: 8, border: 0, background: "transparent", color: C.textDim }}>{mode === "sign-in" ? "Need an account? Sign up" : "Back to sign in"}</button>}
       </form>
     </div>
   );
@@ -602,6 +609,7 @@ export default function TimChat() {
   const [moodConfidence, setMoodConfidence] = useState(0);
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [recoveryMode, setRecoveryMode] = useState(false);
   const scrollRef = useRef(null);
   const t = useDusk();
   const C = THEMES[theme];
@@ -611,11 +619,13 @@ export default function TimChat() {
     supabase.auth.getSession().then(({ data }) => {
       if (mounted) {
         setUser(data.session?.user || null);
+        setRecoveryMode(new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery");
         setAuthLoading(false);
       }
     });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
+      if (event === "PASSWORD_RECOVERY") setRecoveryMode(true);
     });
     return () => {
       mounted = false;
@@ -822,6 +832,7 @@ export default function TimChat() {
   if (authLoading) {
     return <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: C.bg, color: C.text }}>Loading...</div>;
   }
+  if (recoveryMode) return <AuthScreen C={C} initialMode="reset-password" onRecoveryComplete={() => setRecoveryMode(false)} />;
   if (!user) return <AuthScreen C={C} />;
 
   return (
