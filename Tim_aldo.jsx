@@ -770,19 +770,21 @@ export default function TimChat() {
     setSettingsOpen(false);
   }
 
-  async function shareApp() {
+  async function shareChat() {
+    const transcript = messages
+      .map((message) => `${message.role === "user" ? "You" : "Tim"}: ${message.content}`)
+      .join("\n\n");
     const shareData = {
       title: "Tim",
-      text: "Try Tim, a private space to think out loud.",
-      url: "https://tim-chatbot.onrender.com/",
+      text: transcript,
     };
     try {
       if (navigator.share) {
         await navigator.share(shareData);
         setShareStatus("Shared");
       } else {
-        await navigator.clipboard.writeText(shareData.url);
-        setShareStatus("Link copied");
+        await navigator.clipboard.writeText(transcript);
+        setShareStatus("Chat copied");
       }
     } catch (shareError) {
       if (shareError.name !== "AbortError") setShareStatus("Couldn't share");
@@ -1079,7 +1081,7 @@ export default function TimChat() {
 
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 {shareStatus && <span style={{ color: C.headerSub, fontSize: 12 }}>{shareStatus}</span>}
-                <IconButton onClick={shareApp} label="Share Tim" C={C}>
+                <IconButton onClick={shareChat} label="Share chat" C={C}>
                   ↗
                 </IconButton>
                 <IconButton onClick={() => setSettingsOpen(true)} label="Settings" C={C}>
