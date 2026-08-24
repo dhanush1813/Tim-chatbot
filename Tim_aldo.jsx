@@ -842,7 +842,7 @@ export default function TimChat() {
       const data = await response.json();
       if (!response.ok) {
         if (response.status === 429) {
-          throw new Error("Gemini's free daily limit has been reached. Please try again later.");
+          throw new Error("Limit reached for today.");
         }
         throw new Error(data?.error?.message || "The chat service is temporarily unavailable.");
       }
