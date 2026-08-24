@@ -21,17 +21,17 @@ constantly disclaim what you are — just be a good, honest presence in the conv
 
 const THEMES = {
   dark: {
-    bg: "#1B1A2E",
-    panel: "#211F38",
-    panel2: "#28264A",
-    panel3: "#1F1D36",
+    bg: "#000000",
+    panel: "#000000",
+    panel2: "#0A0A0A",
+    panel3: "#101010",
     border: "rgba(0,0,0,0.32)",
     text: "#F2ECE4",
     textDim: "rgba(242,236,228,0.6)",
     bubbleUser: "#3D3557",
     bubbleAssistant: "rgba(232,162,75,0.12)",
     bubbleAssistantBorder: "rgba(232,162,75,0.3)",
-    inputBg: "#1B1A2E",
+    inputBg: "#000000",
     accent: "#E0A24B",
     accentText: "#1B1A2E",
     danger: "#E08A8A",
@@ -86,7 +86,7 @@ const MOOD_THEMES = {
     accent: "#9b7fd4",
   },
   neutral: {
-    bg: "#1B1A2E",
+    bg: "#000000",
     accent: "#8a8f98",
   },
 };
@@ -897,6 +897,7 @@ export default function TimChat() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap');
         * { box-sizing: border-box; }
+        html, body, #root { margin: 0; min-height: 100%; background: ${C.bg}; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: ${C.bg}; }
         ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 3px; }
@@ -912,7 +913,7 @@ export default function TimChat() {
           maxWidth: 960,
           minHeight: "100vh",
           display: "flex",
-          background: C.panel,
+          background: MOOD_THEMES[detectedMood]?.bg || MOOD_THEMES.neutral.bg,
           boxShadow: "0 0 60px rgba(0,0,0,0.25)",
         }}
       >
