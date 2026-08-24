@@ -156,7 +156,7 @@ function AuthScreen({ C }) {
       ? await supabase.auth.signInWithPassword({ email, password })
       : await supabase.auth.signUp({ email, password });
     if (result.error) setError(result.error.message);
-    else if (mode === "sign-up") setError("Check your email to confirm your account.");
+    else if (mode === "sign-up" && !result.data.session) setError("Email confirmation is enabled in Supabase.");
     setBusy(false);
   }
 
