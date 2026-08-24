@@ -635,6 +635,7 @@ export default function TimChat() {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [recoveryMode, setRecoveryMode] = useState(false);
+  const [shareStatus, setShareStatus] = useState("");
   const scrollRef = useRef(null);
   const t = useDusk();
   const C = THEMES[theme];
@@ -767,6 +768,26 @@ export default function TimChat() {
   async function signOut() {
     await supabase.auth.signOut();
     setSettingsOpen(false);
+  }
+
+  async function shareApp() {
+    const shareData = {
+      title: "Tim",
+      text: "Try Tim, a private space to think out loud.",
+      url: "https://tim-chatbot.onrender.com/",
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        setShareStatus("Shared");
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        setShareStatus("Link copied");
+      }
+    } catch (shareError) {
+      if (shareError.name !== "AbortError") setShareStatus("Couldn't share");
+    }
+    window.setTimeout(() => setShareStatus(""), 2200);
   }
 
   async function deleteConversation(id, ev) {
@@ -1056,9 +1077,15 @@ export default function TimChat() {
                 </div>
               </div>
 
-              <IconButton onClick={() => setSettingsOpen(true)} label="Settings" C={C}>
-                ⚙
-              </IconButton>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {shareStatus && <span style={{ color: C.headerSub, fontSize: 12 }}>{shareStatus}</span>}
+                <IconButton onClick={shareApp} label="Share Tim" C={C}>
+                  ↗
+                </IconButton>
+                <IconButton onClick={() => setSettingsOpen(true)} label="Settings" C={C}>
+                  ⚙
+                </IconButton>
+              </div>
             </div>
           </div>
 
