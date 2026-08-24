@@ -141,8 +141,9 @@ const GREETING = {
 
 function AuthScreen({ C }) {
   const [mode, setMode] = useState("sign-in");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => window.localStorage.getItem("tim:last-email") || "");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
 
@@ -150,6 +151,7 @@ function AuthScreen({ C }) {
     event.preventDefault();
     setBusy(true);
     setError(null);
+    window.localStorage.setItem("tim:last-email", email);
     const result = mode === "sign-in"
       ? await supabase.auth.signInWithPassword({ email, password })
       : await supabase.auth.signUp({ email, password });
@@ -164,9 +166,13 @@ function AuthScreen({ C }) {
         <h1 style={{ margin: 0, fontFamily: "Fraunces, serif", fontSize: 32 }}>Tim</h1>
         <p style={{ color: C.textDim, margin: "8px 0 24px" }}>{mode === "sign-in" ? "Welcome back" : "Create your account"}</p>
         <label style={{ display: "block", fontSize: 13, marginBottom: 6 }}>Email</label>
-        <input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} style={{ width: "100%", boxSizing: "border-box", marginBottom: 14, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
+        <input required type="email" autoComplete="email" list="tim-saved-emails" value={email} onChange={(event) => setEmail(event.target.value)} style={{ width: "100%", boxSizing: "border-box", marginBottom: 14, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
+        <datalist id="tim-saved-emails"><option value={email} /></datalist>
         <label style={{ display: "block", fontSize: 13, marginBottom: 6 }}>Password</label>
-        <input required minLength={6} type="password" value={password} onChange={(event) => setPassword(event.target.value)} style={{ width: "100%", boxSizing: "border-box", marginBottom: 18, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
+        <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
+          <input required minLength={6} autoComplete={mode === "sign-in" ? "current-password" : "new-password"} type={showPassword ? "text" : "password"} value={password} onChange={(event) => setPassword(event.target.value)} style={{ flex: 1, minWidth: 0, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
+          <button type="button" onClick={() => setShowPassword((visible) => !visible)} style={{ border: `1px solid ${C.border}`, borderRadius: 8, background: "transparent", color: C.text, padding: "0 10px", cursor: "pointer" }}>{showPassword ? "Hide" : "Show"}</button>
+        </div>
         {error && <p style={{ color: C.danger, fontSize: 13, lineHeight: 1.4 }}>{error}</p>}
         <button type="submit" disabled={busy} style={{ width: "100%", padding: 11, border: 0, borderRadius: 8, background: C.accent, color: C.accentText, fontWeight: 600 }}>{busy ? "Please wait..." : mode === "sign-in" ? "Sign in" : "Create account"}</button>
         <button type="button" onClick={() => { setMode(mode === "sign-in" ? "sign-up" : "sign-in"); setError(null); }} style={{ width: "100%", marginTop: 12, padding: 8, border: 0, background: "transparent", color: C.textDim }}>{mode === "sign-in" ? "Need an account? Sign up" : "Already have an account? Sign in"}</button>
