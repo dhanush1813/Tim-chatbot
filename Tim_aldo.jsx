@@ -143,6 +143,7 @@ function AuthScreen({ C, initialMode = "sign-in", onRecoveryComplete }) {
   const [mode, setMode] = useState(initialMode);
   const [email, setEmail] = useState(() => window.localStorage.getItem("tim:last-email") || "");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -152,6 +153,11 @@ function AuthScreen({ C, initialMode = "sign-in", onRecoveryComplete }) {
     setBusy(true);
     setError(null);
     window.localStorage.setItem("tim:last-email", email);
+    if ((mode === "sign-up" || mode === "reset-password") && password !== confirmPassword) {
+      setError("Passwords do not match.");
+      setBusy(false);
+      return;
+    }
     const result = mode === "reset-password"
       ? await supabase.auth.updateUser({ password })
       : mode === "reset"
@@ -184,6 +190,10 @@ function AuthScreen({ C, initialMode = "sign-in", onRecoveryComplete }) {
             <input required minLength={6} autoComplete={mode === "sign-in" ? "current-password" : "new-password"} type={showPassword ? "text" : "password"} value={password} onChange={(event) => setPassword(event.target.value)} style={{ flex: 1, minWidth: 0, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
             <button type="button" onClick={() => setShowPassword((visible) => !visible)} style={{ border: `1px solid ${C.border}`, borderRadius: 8, background: "transparent", color: C.text, padding: "0 10px", cursor: "pointer" }}>{showPassword ? "Hide" : "Show"}</button>
           </div>
+          {(mode === "sign-up" || mode === "reset-password") && <>
+            <label style={{ display: "block", fontSize: 13, marginBottom: 6 }}>Confirm password</label>
+            <input required minLength={6} type={showPassword ? "text" : "password"} value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} style={{ width: "100%", boxSizing: "border-box", marginBottom: 18, padding: 11, borderRadius: 8, border: `1px solid ${C.border}`, background: C.inputBg, color: C.text }} />
+          </>}
         </>}
         {error && <p style={{ color: C.danger, fontSize: 13, lineHeight: 1.4 }}>{error}</p>}
         <button type="submit" disabled={busy} style={{ width: "100%", padding: 11, border: 0, borderRadius: 8, background: C.accent, color: C.accentText, fontWeight: 600 }}>{busy ? "Please wait..." : mode === "sign-in" ? "Sign in" : mode === "reset-password" ? "Update password" : mode === "reset" ? "Send reset email" : "Create account"}</button>
