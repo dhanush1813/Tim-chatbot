@@ -32,10 +32,14 @@ export async function detectMoodAI(text, conversationHistory = []) {
       })
     });
 
-    if (!response.ok) throw new Error('API error');
+    if (!response.ok) {
+      console.warn(`Mood detection API returned ${response.status}`);
+      throw new Error('API error');
+    }
     const data = await response.json();
     
     if (!MOOD_KEYS.includes(data.mood)) {
+      console.warn('Invalid mood value from API:', data.mood);
       throw new Error('Invalid mood value');
     }
 
@@ -44,7 +48,7 @@ export async function detectMoodAI(text, conversationHistory = []) {
       confidence: Math.max(0, Math.min(1, Number(data.confidence) || 0.5))
     };
   } catch (err) {
-    console.warn('AI mood detection failed, using fallback:', err);
+    console.warn('AI mood detection failed, using fallback:', err.message);
     return detectMoodFallback(text);
   }
 }
@@ -58,18 +62,38 @@ export function detectMoodFallback(text) {
   const t = text.toLowerCase();
   const scores = { happy: 0, excited: 0, sad: 0, angry: 0, anxious: 0, neutral: 0 };
 
+  // Score keywords
   for (const [mood, words] of Object.entries(LEXICON)) {
     for (const w of words) {
       if (t.includes(w)) scores[mood] += 1;
     }
   }
 
-  if (/!!!|[A-Z]{4,}/.test(text)) scores.angry += 0.5;
+  // Detect intensity markers
+  if (/!!!|\?\?\?|[A-Z]{4,}/.test(text)) scores.angry += 0.5;
+  if (/!{2,}|wow|amazing|love|great|yes|awesome/.test(t)) scores.happy += 0.5;
+  if (/can't wait|finally|excited|so/.test(t)) scores.excited += 0.5;
+  if (/help|please|urgent|asap/.test(t)) scores.anxious += 0.5;
 
+  // Count negative patterns
+  const negativeCount = (t.match(/don't|not|no|never|won't|can't/g) || []).length;
+  if (negativeCount > 2) scores.sad += 0.5;
+
+  // Get top mood
   const [topMood, topScore] = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
+  
+  // Determine confidence based on score
+  let confidence = 0.3;
+  if (topScore > 0) {
+    confidence = Math.min(0.8, 0.3 + topScore * 0.15);
+  }
+
+  const detectedMood = topScore > 0 ? topMood : 'neutral';
+  console.log(`Fallback mood detection: "${text.slice(0, 40)}..." => ${detectedMood} (confidence: ${confidence.toFixed(2)})`);
+  
   return {
-    mood: topScore > 0 ? topMood : 'neutral',
-    confidence: topScore > 0 ? 0.5 : 0.3
+    mood: detectedMood,
+    confidence
   };
 }
 

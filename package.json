@@ -18,5 +18,8 @@
     "react": "latest",
     "react-dom": "latest",
     "vite": "latest"
+  },
+  "devDependencies": {
+    "pm2": "^7.0.4"
   }
 }

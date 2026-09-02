@@ -21,73 +21,79 @@ constantly disclaim what you are — just be a good, honest presence in the conv
 
 const THEMES = {
   dark: {
-    bg: "#000000",
-    panel: "#000000",
-    panel2: "#0A0A0A",
-    panel3: "#101010",
-    border: "rgba(0,0,0,0.32)",
-    text: "#F2ECE4",
-    textDim: "rgba(242,236,228,0.6)",
-    bubbleUser: "#3D3557",
-    bubbleAssistant: "rgba(232,162,75,0.12)",
-    bubbleAssistantBorder: "rgba(232,162,75,0.3)",
-    inputBg: "#000000",
-    accent: "#E0A24B",
-    accentText: "#1B1A2E",
-    danger: "#E08A8A",
-    heroFrom: [250, 45, 22],
-    heroTo: [20, 55, 30],
-    headerText: "#F2ECE4",
-    headerSub: "rgba(242,236,228,0.65)",
-    overlay: "rgba(10,9,20,0.6)",
+    bg: "#070B12",
+    panel: "#0E1520",
+    panel2: "#101A28",
+    panel3: "#162230",
+    border: "rgba(255,255,255,0.08)",
+    text: "#F6F1E8",
+    textDim: "rgba(246,241,232,0.7)",
+    bubbleUser: "#3B4C77",
+    bubbleAssistant: "rgba(255,180,84,0.18)",
+    bubbleAssistantBorder: "rgba(255,180,84,0.4)",
+    inputBg: "#121D2A",
+    accent: "#FFB454",
+    accentText: "#111827",
+    danger: "#FF7A7A",
+    heroFrom: [18, 80, 68],
+    heroTo: [220, 72, 55],
+    headerText: "#F6F1E8",
+    headerSub: "rgba(246,241,232,0.72)",
+    overlay: "rgba(4,7,12,0.7)",
   },
   light: {
-    bg: "#F4EFE6",
-    panel: "#FBF8F2",
-    panel2: "#EFE7D8",
-    panel3: "#F7F2E9",
-    border: "rgba(40,30,20,0.1)",
-    text: "#2A2418",
-    textDim: "rgba(42,36,24,0.55)",
-    bubbleUser: "#E4DAC4",
-    bubbleAssistant: "rgba(199,111,58,0.12)",
-    bubbleAssistantBorder: "rgba(199,111,58,0.35)",
-    inputBg: "#FBF8F2",
-    accent: "#C76F3A",
-    accentText: "#FBF8F2",
-    danger: "#B4452F",
-    heroFrom: [35, 55, 78],
-    heroTo: [15, 60, 70],
-    headerText: "#2A2418",
-    headerSub: "rgba(42,36,24,0.6)",
-    overlay: "rgba(30,24,14,0.35)",
+    bg: "#F7F3EE",
+    panel: "#FFFDF9",
+    panel2: "#F2E7DA",
+    panel3: "#F8F1E7",
+    border: "rgba(70,50,30,0.12)",
+    text: "#2A210F",
+    textDim: "rgba(42,33,15,0.64)",
+    bubbleUser: "#E7D6B1",
+    bubbleAssistant: "rgba(217,119,6,0.12)",
+    bubbleAssistantBorder: "rgba(217,119,6,0.34)",
+    inputBg: "#FFF9F3",
+    accent: "#D97706",
+    accentText: "#FFFDF9",
+    danger: "#C94B3D",
+    heroFrom: [38, 88, 70],
+    heroTo: [28, 60, 80],
+    headerText: "#2A210F",
+    headerSub: "rgba(42,33,15,0.7)",
+    overlay: "rgba(30,22,12,0.28)",
   },
 };
 
-const MOOD_THEMES = {
+const MOOD_COLORS = {
   happy: {
-    bg: "linear-gradient(135deg, #fff9e6 0%, #ffe8cc 100%)",
-    accent: "#e0a52c",
+    boxBg: "#e0a52c",
+    textColor: "#1B1A2E",
+    lightBg: "rgba(224, 165, 44, 0.15)",
   },
   excited: {
-    bg: "linear-gradient(135deg, #e0f7f4 0%, #b3e5e1 100%)",
-    accent: "#3fb6a8",
+    boxBg: "#3fb6a8",
+    textColor: "#FFFFFF",
+    lightBg: "rgba(63, 182, 168, 0.15)",
   },
   sad: {
-    bg: "linear-gradient(135deg, #e8ecf9 0%, #d4dff5 100%)",
-    accent: "#5c7cfa",
+    boxBg: "#5c7cfa",
+    textColor: "#FFFFFF",
+    lightBg: "rgba(92, 124, 250, 0.15)",
   },
   angry: {
-    bg: "linear-gradient(135deg, #fde8e6 0%, #f5c9c3 100%)",
-    accent: "#c9584f",
+    boxBg: "#c9584f",
+    textColor: "#FFFFFF",
+    lightBg: "rgba(201, 88, 79, 0.15)",
   },
   anxious: {
-    bg: "linear-gradient(135deg, #f3e9f8 0%, #e6d5f0 100%)",
-    accent: "#9b7fd4",
+    boxBg: "#9b7fd4",
+    textColor: "#FFFFFF",
+    lightBg: "rgba(155, 127, 212, 0.15)",
   },
   neutral: {
-    bg: "#000000",
-    accent: "#8a8f98",
+    boxBg: "#6B7280",
+    textColor: "#FFFFFF",
+    lightBg: "rgba(107, 114, 128, 0.15)",
   },
 };
 
@@ -232,17 +238,32 @@ function IconButton({ onClick, label, children, C }) {
       aria-label={label}
       title={label}
       style={{
-        background: "rgba(0,0,0,0.15)",
+        background: "rgba(255,255,255,0.03)",
         border: `1px solid ${C.border}`,
-        borderRadius: 8,
+        borderRadius: 10,
         color: C.text,
-        width: 34,
-        height: 34,
+        width: 36,
+        height: 36,
         cursor: "pointer",
         fontSize: 15,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        boxShadow: "0 8px 18px rgba(0,0,0,0.08)",
+        backdropFilter: "blur(8px)",
+        transition: "transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-1px)";
+        e.currentTarget.style.borderColor = C.bubbleAssistantBorder;
+        e.currentTarget.style.background = "rgba(255,255,255,0.06)";
+        e.currentTarget.style.boxShadow = "0 12px 20px rgba(0,0,0,0.12)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.borderColor = C.border;
+        e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+        e.currentTarget.style.boxShadow = "0 8px 18px rgba(0,0,0,0.08)";
       }}
     >
       {children}
@@ -630,16 +651,26 @@ export default function TimChat() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [personalization, setPersonalization] = useState(DEFAULT_PERSONALIZATION);
   const [privacy, setPrivacy] = useState(DEFAULT_PRIVACY);
-  const [detectedMood, setDetectedMood] = useState("neutral");
+  const [detectedMood, setDetectedMood] = useState("happy");
   const [moodConfidence, setMoodConfidence] = useState(0);
+  const [lastMoodDetectedTime, setLastMoodDetectedTime] = useState(0);
+  const [moodTimeout, setMoodTimeout] = useState(null);
+  const [moodTimeRemaining, setMoodTimeRemaining] = useState(0);
+  const [moodPhase, setMoodPhase] = useState("detect"); // "detect" (7 min) or "hold" (10 min)
+  const DETECT_DURATION_MS = 7 * 60 * 1000; // 7 minutes for detection phase
+  const HOLD_DURATION_MS = 10 * 60 * 1000; // 10 minutes for holding color
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [recoveryMode, setRecoveryMode] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
+  const [chatMenuOpen, setChatMenuOpen] = useState(false);
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [newChatName, setNewChatName] = useState("");
   const scrollRef = useRef(null);
   const t = useDusk();
-  const moodTheme = MOOD_THEMES[detectedMood] || MOOD_THEMES.neutral;
-  const C = { ...THEMES[theme], accent: moodTheme.accent };
+  const moodColor = MOOD_COLORS[detectedMood] || MOOD_COLORS.neutral;
+  const C = { ...THEMES[theme] };
 
   useEffect(() => {
     let mounted = true;
@@ -659,6 +690,27 @@ export default function TimChat() {
       listener.subscription.unsubscribe();
     };
   }, []);
+
+  // Cleanup mood timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (moodTimeout) clearTimeout(moodTimeout);
+    };
+  }, [moodTimeout]);
+
+  // Update mood timer display every second
+  useEffect(() => {
+    const timerInterval = setInterval(() => {
+      if (lastMoodDetectedTime > 0) {
+        const elapsed = Date.now() - lastMoodDetectedTime;
+        const currentDuration = moodPhase === "hold" ? HOLD_DURATION_MS : DETECT_DURATION_MS;
+        const remaining = Math.max(0, currentDuration - elapsed);
+        setMoodTimeRemaining(remaining);
+      }
+    }, 1000);
+    
+    return () => clearInterval(timerInterval);
+  }, [lastMoodDetectedTime, moodPhase]);
 
   const systemPrompt = useMemo(() => {
     let p = BASE_PROMPT;
@@ -803,6 +855,44 @@ export default function TimChat() {
     if (activeId === id) startNewChat();
   }
 
+  async function renameConversation(id, newTitle) {
+    const updated = convIndex.map((c) =>
+      c.id === id ? { ...c, title: newTitle, updatedAt: Date.now() } : c
+    );
+    await saveConvIndex(updated);
+  }
+
+  function openRenameDialog() {
+    if (activeId) {
+      const current = convIndex.find((c) => c.id === activeId);
+      setNewChatName(current?.title || "New chat");
+      setRenameDialogOpen(true);
+      setChatMenuOpen(false);
+    }
+  }
+
+  async function submitRename() {
+    const trimmed = newChatName.trim();
+    if (activeId && trimmed) {
+      await renameConversation(activeId, trimmed);
+      setRenameDialogOpen(false);
+      setNewChatName("");
+    }
+  }
+
+  function deleteCurrentChat() {
+    if (activeId) {
+      setDeleteConfirmOpen(true);
+      setChatMenuOpen(false);
+    }
+  }
+
+  async function confirmDeleteCurrentChat() {
+    if (!activeId) return;
+    await deleteConversation(activeId, { stopPropagation: () => {} });
+    setDeleteConfirmOpen(false);
+  }
+
   async function clearAllHistory() {
     for (const c of convIndex) {
       try {
@@ -824,8 +914,26 @@ export default function TimChat() {
 
     // Run mood detection alongside the reply request so it does not delay the response.
     detectMoodAI(text, messages).then(({ mood, confidence }) => {
-      setDetectedMood(mood);
-      setMoodConfidence(confidence);
+      const now = Date.now();
+      
+      // Only update mood if we're in detect phase OR if it's the first detection
+      if (moodPhase === "detect" || lastMoodDetectedTime === 0) {
+        setDetectedMood(mood);
+        setMoodConfidence(confidence);
+        setLastMoodDetectedTime(now);
+        setMoodPhase("hold"); // Switch to hold phase after detection
+        
+        // Clear previous timeout if any
+        if (moodTimeout) clearTimeout(moodTimeout);
+        
+        // After 10 minutes in hold phase, switch back to detect phase
+        const timeout = setTimeout(() => {
+          setMoodPhase("detect");
+          setLastMoodDetectedTime(0);
+        }, HOLD_DURATION_MS);
+        setMoodTimeout(timeout);
+      }
+      // If in hold phase, don't update mood - just ignore the detection
     });
 
     try {
@@ -896,15 +1004,20 @@ export default function TimChat() {
         minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
-        background: MOOD_THEMES[detectedMood]?.bg || MOOD_THEMES.neutral.bg,
+        background: C.bg,
         fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-        transition: "background 900ms ease",
       }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap');
         * { box-sizing: border-box; }
         html, body, #root { margin: 0; min-height: 100%; background: ${C.bg}; }
+        body {
+          background:
+            radial-gradient(circle at top left, rgba(255,180,84,0.12), transparent 24%),
+            radial-gradient(circle at bottom right, rgba(59,76,119,0.14), transparent 30%),
+            ${C.bg};
+        }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: ${C.bg}; }
         ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 3px; }
@@ -920,8 +1033,12 @@ export default function TimChat() {
           maxWidth: 960,
           minHeight: "100vh",
           display: "flex",
-          background: MOOD_THEMES[detectedMood]?.bg || MOOD_THEMES.neutral.bg,
-          boxShadow: "0 0 60px rgba(0,0,0,0.25)",
+          background: "rgba(255,255,255,0.02)",
+          backdropFilter: "blur(16px)",
+          border: `1px solid ${C.border}`,
+          boxShadow: "0 32px 80px rgba(0,0,0,0.22)",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
         {/* Sidebar */}
@@ -942,15 +1059,16 @@ export default function TimChat() {
               onClick={startNewChat}
               style={{
                 width: "100%",
-                padding: "10px 12px",
-                borderRadius: 10,
-                border: `1px solid ${C.border}`,
-                background: "transparent",
-                color: C.text,
+                padding: "11px 12px",
+                borderRadius: 12,
+                border: `1px solid ${C.bubbleAssistantBorder}`,
+                background: `linear-gradient(135deg, ${C.accent} 0%, ${C.bubbleAssistant} 100%)`,
+                color: C.accentText,
                 fontSize: 14,
-                fontWeight: 500,
+                fontWeight: 600,
                 cursor: "pointer",
                 textAlign: "left",
+                boxShadow: "0 12px 24px rgba(0,0,0,0.12)",
               }}
             >
               + New chat
@@ -968,14 +1086,16 @@ export default function TimChat() {
                 onClick={() => loadConversation(c.id)}
                 style={{
                   padding: "10px 10px",
-                  borderRadius: 8,
+                  borderRadius: 12,
                   marginBottom: 4,
                   cursor: "pointer",
-                  background: c.id === activeId ? C.bubbleAssistant : "transparent",
+                  background: c.id === activeId ? `linear-gradient(135deg, ${C.bubbleAssistant} 0%, rgba(255,255,255,0.02) 100%)` : "transparent",
+                  border: c.id === activeId ? `1px solid ${C.bubbleAssistantBorder}` : "1px solid transparent",
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
                   gap: 8,
+                  transition: "all 0.15s ease",
                 }}
               >
                 <span
@@ -985,6 +1105,7 @@ export default function TimChat() {
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     whiteSpace: "nowrap",
+                    fontWeight: c.id === activeId ? 600 : 500,
                   }}
                 >
                   {c.title}
@@ -999,6 +1120,7 @@ export default function TimChat() {
                     cursor: "pointer",
                     fontSize: 13,
                     flexShrink: 0,
+                    opacity: 0.8,
                   }}
                 >
                   ✕
@@ -1075,16 +1197,56 @@ export default function TimChat() {
                   >
                     Tim
                   </h1>
-                  <p
-                    style={{
-                      margin: "2px 0 0",
-                      fontSize: 12.5,
-                      color: C.headerSub,
-                      fontFamily: "'IBM Plex Mono', monospace",
-                    }}
-                  >
-                    I am your Mate
-                  </p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2, flexWrap: "wrap" }}>
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        padding: "4px 8px",
+                        borderRadius: 999,
+                        background: "rgba(255,255,255,0.08)",
+                        border: `1px solid ${C.border}`,
+                        color: C.headerSub,
+                        fontSize: 11,
+                        fontFamily: "'IBM Plex Mono', monospace",
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      <span>{MOOD_CONFIG[detectedMood]?.icon}</span>
+                      <span>{MOOD_CONFIG[detectedMood]?.label}</span>
+                      {moodConfidence > 0 && <span>({Math.round(moodConfidence * 100)}%)</span>}
+                    </span>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: 12.5,
+                        color: C.headerSub,
+                        fontFamily: "'IBM Plex Mono', monospace",
+                      }}
+                    >
+                      I am your Mate
+                    </p>
+                    {lastMoodDetectedTime > 0 && (
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 5,
+                          padding: "4px 8px",
+                          borderRadius: 999,
+                          background: "rgba(255,255,255,0.06)",
+                          border: `1px solid ${C.border}`,
+                          color: C.headerSub,
+                          fontSize: 11,
+                        }}
+                      >
+                        <span>{moodPhase === "detect" ? "🔍" : "🎨"}</span>
+                        <span>{Math.floor(moodTimeRemaining / 60000)}:{(Math.floor((moodTimeRemaining % 60000) / 1000)).toString().padStart(2, '0')}</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -1093,6 +1255,62 @@ export default function TimChat() {
                 <IconButton onClick={shareChat} label="Share chat" C={C}>
                   ↗
                 </IconButton>
+                <IconButton onClick={startNewChat} label="Refresh chat" C={C}>
+                  ↻
+                </IconButton>
+                <div style={{ position: "relative" }}>
+                  <IconButton onClick={() => setChatMenuOpen(!chatMenuOpen)} label="Chat options" C={C}>
+                    ⋯
+                  </IconButton>
+                  {chatMenuOpen && activeId && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "100%",
+                        right: 0,
+                        marginTop: 4,
+                        background: C.panel,
+                        border: `1px solid ${C.border}`,
+                        borderRadius: 8,
+                        overflow: "hidden",
+                        zIndex: 10,
+                        minWidth: 160,
+                      }}
+                    >
+                      <button
+                        onClick={openRenameDialog}
+                        style={{
+                          width: "100%",
+                          padding: "8px 12px",
+                          border: "none",
+                          background: "transparent",
+                          color: C.text,
+                          textAlign: "left",
+                          fontSize: 13,
+                          cursor: "pointer",
+                        }}
+                      >
+                        Rename chat
+                      </button>
+                      <button
+                        onClick={deleteCurrentChat}
+                        style={{
+                          width: "100%",
+                          padding: "8px 12px",
+                          border: "none",
+                          background: "transparent",
+                          color: C.danger,
+                          textAlign: "left",
+                          fontSize: 13,
+                          cursor: "pointer",
+                          borderTop: `1px solid ${C.border}`,
+                        }}
+                      >
+                        Delete chat
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <IconButton onClick={() => setSettingsOpen(true)} label="Settings" C={C}>
                   ⚙
                 </IconButton>
@@ -1117,21 +1335,26 @@ export default function TimChat() {
               messages.map((m, i) => (
                 <div
                   key={i}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
                   style={{
                     alignSelf: m.role === "user" ? "flex-end" : "flex-start",
                     maxWidth: "82%",
-                    background: m.role === "user" ? C.bubbleUser : C.bubbleAssistant,
-                    border:
-                      m.role === "user"
-                        ? `1px solid ${C.border}`
-                        : `1px solid ${C.bubbleAssistantBorder}`,
-                    color: C.text,
-                    padding: "10px 14px",
+                    background: m.role === "user" ? moodColor.boxBg : moodColor.lightBg,
+                    border: `1px solid ${m.role === "user" ? moodColor.boxBg : C.border}`,
+                    color: m.role === "user" ? moodColor.textColor : C.text,
+                    padding: "12px 14px",
                     borderRadius:
-                      m.role === "user" ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
+                      m.role === "user" ? "18px 18px 6px 18px" : "18px 18px 18px 6px",
                     fontSize: 15,
-                    lineHeight: 1.5,
+                    lineHeight: 1.55,
                     whiteSpace: "pre-wrap",
+                    boxShadow: "0 10px 22px rgba(0,0,0,0.08)",
+                    transition: "background 300ms ease, color 300ms ease, border 300ms ease, transform 200ms ease",
                   }}
                 >
                   {m.content}
@@ -1176,28 +1399,32 @@ export default function TimChat() {
               style={{
                 flex: 1,
                 resize: "none",
-                background: C.inputBg,
-                border: `1px solid ${C.border}`,
-                borderRadius: 10,
-                color: C.text,
-                padding: "10px 12px",
+                background: `linear-gradient(135deg, ${moodColor.boxBg} 0%, rgba(255,255,255,0.04) 100%)`,
+                border: `2px solid ${moodColor.boxBg}`,
+                borderRadius: 14,
+                color: moodColor.textColor,
+                padding: "12px 14px",
                 fontSize: 15,
                 fontFamily: "inherit",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12), 0 12px 24px rgba(0,0,0,0.08)",
+                transition: "background 300ms ease, color 300ms ease, transform 200ms ease",
               }}
             />
             <button
               onClick={send}
               disabled={loading || !input.trim()}
               style={{
-                background: C.accent,
-                color: C.accentText,
-                border: "none",
-                borderRadius: 10,
+                background: `linear-gradient(135deg, ${moodColor.boxBg} 0%, ${moodColor.lightBg.replace("0.15", "0.28")} 100%)`,
+                color: moodColor.textColor,
+                border: `1px solid ${moodColor.boxBg}`,
+                borderRadius: 14,
                 padding: "0 18px",
-                fontWeight: 600,
+                fontWeight: 700,
                 fontSize: 14,
                 cursor: loading || !input.trim() ? "default" : "pointer",
-                opacity: loading || !input.trim() ? 0.5 : 1,
+                opacity: loading || !input.trim() ? 0.6 : 1,
+                boxShadow: "0 12px 20px rgba(0,0,0,0.1)",
+                transition: "transform 200ms ease, opacity 200ms ease, box-shadow 200ms ease",
               }}
             >
               Send
@@ -1205,6 +1432,155 @@ export default function TimChat() {
           </div>
         </div>
       </div>
+
+      {renameDialogOpen && (
+        <div
+          onClick={() => setRenameDialogOpen(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: C.overlay,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+            padding: 16,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "100%",
+              maxWidth: 400,
+              background: C.panel,
+              borderRadius: 14,
+              border: `1px solid ${C.border}`,
+              boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
+              padding: 24,
+            }}
+          >
+            <h2 style={{ margin: "0 0 16px", fontSize: 18, color: C.text }}>Rename chat</h2>
+            <input
+              autoFocus
+              type="text"
+              value={newChatName}
+              onChange={(e) => setNewChatName(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") submitRename();
+                if (e.key === "Escape") setRenameDialogOpen(false);
+              }}
+              placeholder="Enter new chat name..."
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                padding: 10,
+                marginBottom: 16,
+                borderRadius: 8,
+                border: `1px solid ${C.border}`,
+                background: C.inputBg,
+                color: C.text,
+                fontSize: 14,
+              }}
+            />
+            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+              <button
+                onClick={() => setRenameDialogOpen(false)}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: 8,
+                  border: `1px solid ${C.border}`,
+                  background: "transparent",
+                  color: C.text,
+                  cursor: "pointer",
+                  fontSize: 13,
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={submitRename}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: 8,
+                  border: "none",
+                  background: C.accent,
+                  color: C.accentText,
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteConfirmOpen && (
+        <div
+          onClick={() => setDeleteConfirmOpen(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: C.overlay,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+            padding: 16,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "100%",
+              maxWidth: 420,
+              background: C.panel,
+              borderRadius: 14,
+              border: `1px solid ${C.border}`,
+              boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
+              padding: 24,
+            }}
+          >
+            <h2 style={{ margin: "0 0 12px", fontSize: 20, color: C.text }}>Delete this chat?</h2>
+            <p style={{ margin: "0 0 20px", color: C.textDim, lineHeight: 1.5, fontSize: 14 }}>
+              This will permanently remove the current conversation from this device. You can’t undo it.
+            </p>
+            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+              <button
+                onClick={() => setDeleteConfirmOpen(false)}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: 8,
+                  border: `1px solid ${C.border}`,
+                  background: "transparent",
+                  color: C.text,
+                  cursor: "pointer",
+                  fontSize: 13,
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteCurrentChat}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: 8,
+                  border: "none",
+                  background: C.danger,
+                  color: "#fff",
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              >
+                Delete chat
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {settingsOpen && (
         <SettingsModal
